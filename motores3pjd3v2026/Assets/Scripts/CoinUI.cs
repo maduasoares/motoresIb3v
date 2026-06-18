@@ -1,28 +1,30 @@
 using UnityEngine;
-using TMPro;
+using TMPro; // Necessário se estiver usando TextMeshPro
 
-public class CoinUI : MonoBehaviour
+public class CoinUIController : MonoBehaviour
 {
-    [SerializeField]
-    private TMP_Text coinText;
+    private TextMeshProUGUI textoMoedas;
 
+    private void Awake()
+    {
+        textoMoedas = GetComponent<TextMeshProUGUI>();
+    }
+
+    // Quando a interface é ativada, ela se INSCREVE no canal
     private void OnEnable()
     {
-        PlayerOM.OnCoinCollected += UpdateCoins;
+        PlayerOM.OnCoinCountChanged += AtualizarTextoMoedas;
     }
 
+    // Quando a interface é desativada, ela se DESINSCREVE (Evita memory leaks/erros)
     private void OnDisable()
     {
-        PlayerOM.OnCoinCollected -= UpdateCoins;
+        PlayerOM.OnCoinCountChanged -= AtualizarTextoMoedas;
     }
 
-    private void Start()
+    // Método que processa a notificação recebida do PlayerOM
+    private void AtualizarTextoMoedas(int totalAtual)
     {
-        coinText.text = "Moedas: 0";
-    }
-
-    private void UpdateCoins(int amount)
-    {
-        coinText.text = "Moedas: " + amount;
+        textoMoedas.text = "Moedas: " + totalAtual;
     }
 }
