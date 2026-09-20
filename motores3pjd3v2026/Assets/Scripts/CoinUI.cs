@@ -1,22 +1,20 @@
 using UnityEngine;
 using TMPro;
-using UnityEngine.UI;
 
 public class Ugui : MonoBehaviour
 {
     public static Ugui Instance { get; private set; }
 
-    [Header("Mostradores de Moedas")]
+    [Header("Mostradores de Estrelas")]
     public TextMeshProUGUI p1ScoreText;
     public TextMeshProUGUI p2ScoreText;
 
     [Header("Painel de Vitória")]
     public GameObject winnerPanel;
     public TextMeshProUGUI winnerText;
-  
 
-    
-    public int targetScore = 10;
+    [Header("Regras de Vitória")]
+    public int targetScore = 5;
 
     private void Awake()
     {
@@ -24,35 +22,35 @@ public class Ugui : MonoBehaviour
         else { Destroy(gameObject); return; }
 
         if (winnerPanel != null) winnerPanel.SetActive(false);
-        
     }
 
     private void OnEnable()
     {
-        PlayerOM.OnCoinCountChanged += AtualizarTextoMoedas;
+        PlayerOM.OnStarCountChanged += AtualizarTextoEstrelas;
         PlayerOM.OnPlayerWon += ExibirVencedor;
     }
 
     private void OnDisable()
     {
-        PlayerOM.OnCoinCountChanged -= AtualizarTextoMoedas;
+        PlayerOM.OnStarCountChanged -= AtualizarTextoEstrelas;
         PlayerOM.OnPlayerWon -= ExibirVencedor;
     }
 
     private void Start()
     {
-        AtualizarTextoMoedas(1, PlayerOM.GetCoins(1));
-        AtualizarTextoMoedas(2, PlayerOM.GetCoins(2));
+        PlayerOM.ResetScores();
+        AtualizarTextoEstrelas(1, PlayerOM.GetStars(1));
+        AtualizarTextoEstrelas(2, PlayerOM.GetStars(2));
     }
 
-    private void AtualizarTextoMoedas(int playerID, int totalMoedas)
+    private void AtualizarTextoEstrelas(int playerID, int totalEstrelas)
     {
         if (playerID == 1 && p1ScoreText != null)
-            p1ScoreText.text = $"P1 Moedas: {totalMoedas}";
+            p1ScoreText.text = $"P1 Estrelas: {totalEstrelas}";
         else if (playerID == 2 && p2ScoreText != null)
-            p2ScoreText.text = $"P2 Moedas: {totalMoedas}";
+            p2ScoreText.text = $"P2 Estrelas: {totalEstrelas}";
 
-        if (targetScore > 0 && totalMoedas >= targetScore)
+        if (targetScore > 0 && totalEstrelas >= targetScore)
         {
             PlayerOM.TriggerWin(playerID);
         }
@@ -64,6 +62,4 @@ public class Ugui : MonoBehaviour
         if (winnerText != null) winnerText.text = $"JOGADOR {winnerPlayerID} VENCEU!";
         Time.timeScale = 0f;
     }
-
-   
 }

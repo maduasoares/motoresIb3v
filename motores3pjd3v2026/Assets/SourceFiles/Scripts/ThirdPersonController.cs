@@ -45,8 +45,6 @@ namespace StarterAssets
         private float _verticalVelocity;
         private float _terminalVelocity = 53.0f;
 
-        private int _moedasColetadas = 0;
-
         private float _jumpTimeoutDelta;
         private float _fallTimeoutDelta;
 
@@ -102,12 +100,11 @@ namespace StarterAssets
 
         private void OnTriggerEnter(Collider other)
         {
+            // Moeda apenas concede aumento de velocidade e destrói o objeto
             if (other.CompareTag("Coin") || other.gameObject.name.Contains("Coin"))
             {
-                Destroy(other.gameObject);
-                _moedasColetadas++;
                 ApplySpeedBoost();
-                PlayerOM.NotifyCoinCollected(PlayerID, _moedasColetadas);
+                Destroy(other.gameObject);
             }
         }
 
